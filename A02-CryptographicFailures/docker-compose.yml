@@ -1,0 +1,57 @@
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: docker/nginx/Dockerfile
+    restart: always
+    ports:
+      - 80:80
+    environment:
+      API_URL: ${API_URL}
+
+  api:
+    build:
+      context: .
+      dockerfile: docker/api/Dockerfile
+    restart: always
+    depends_on:
+      - mariadb
+    volumes:
+      - ./src/api:/app
+      - /app/node_modules
+    ports:
+      - 1337:3000
+    env_file:
+      - ./.env
+    environment:
+      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASS: ${DATABASE_PASS}
+      DATABASE_NAME: ${DATABASE_NAME}
+      SECRET_KEY: ${SECRET_KEY}
+
+  mariadb:
+    build:
+      context: .
+      dockerfile: docker/db/Dockerfile
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DATABASE_PASS}
+    volumes:
+      - mariadb-db:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin
+    ports:
+      - 81:80
+    depends_on:
+      - mariadb
+    env_file:
+      - ./.env
+    environment:
+      PMA_HOST: mariadb
+      PMA_USER: ${DATABASE_USER}
+      PMA_PASSWORD: ${DATABASE_PASS}
+
+volumes:
+  mariadb-db:
