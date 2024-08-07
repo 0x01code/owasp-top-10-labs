@@ -95,7 +95,9 @@ app.post('/auth/register', async (req, res) => {
             })
         }
 
-        await sequelize.query(`INSERT INTO users (email,password,name) VALUES ('${email}','${password}','${name}')`, {
+        const hash = md5(req.body.password);
+
+        await sequelize.query(`INSERT INTO users (email,password,name) VALUES ('${email}','${hash}','${name}')`, {
             type: QueryTypes.INSERT,
         })
 
