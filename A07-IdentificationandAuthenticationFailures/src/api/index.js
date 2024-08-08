@@ -134,7 +134,7 @@ app.post('/auth/register', async (req, res) => {
         const salt = bcrypt.genSaltSync(saltRounds);
         const hash = bcrypt.hashSync(req.body.password, salt);
 
-        await sequelize.query('INSERT INTO `users` (email,password,name) VALUES ($email,$password,$name,$pin)', {
+        await sequelize.query('INSERT INTO `users` (email,password,name,pin) VALUES ($email,$password,$name,$pin)', {
             bind: {
                 email: req.body.email,
                 password: hash,
