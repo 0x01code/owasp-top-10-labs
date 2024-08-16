@@ -22,7 +22,7 @@ export default defineNuxtConfig({
   },
   app: {
     head: {
-      title: 'A01-BrokenAccessControl'
+      title: 'A10-Server-Side Request Forgery (SSRF)'
     }
   }
 })
